@@ -2,9 +2,9 @@
 .DS_Store
 
 # Static files
-assets/*
+src/assets/*
 !assets/.gitkeep
-media/*
+src/media/*
 !media/.gitkeep
 
 # Env files
