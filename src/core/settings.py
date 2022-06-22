@@ -176,3 +176,17 @@ REST_FRAMEWORK = {
         "no_underscore_before_number": True,
     },
 }
+
+# drf-yasg
+SWAGGER_SETTINGS = {
+    # disable Django login as an authentication/authorization mechanism
+    "USE_SESSION_AUTH": False,
+    "SECURITY_DEFINITIONS": {
+        "JWT": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Format: `Bearer <access_token>`",
+        },
+    },
+}
