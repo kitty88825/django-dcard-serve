@@ -8,3 +8,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "email", "password", "image"]
         extra_kwargs = {"password": {"write_only": True}}
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "password", "image"]
+        extra_kwargs = {"password": {"write_only": True}}
