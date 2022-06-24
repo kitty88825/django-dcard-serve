@@ -1,1 +1,1 @@
-# Base Project
+# Django Dcard serve

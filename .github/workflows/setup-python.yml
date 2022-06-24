@@ -1,0 +1,17 @@
+name: Caching packages dependencies
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # This step checks out a copy of your repository.
+      - uses: actions/checkout@v3
+      - name: Install pipenv  # https://github.com/actions/setup-python
+        run: pipx install pipenv
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.8.13'
+          cache: 'pipenv'
+      - run: pipenv install
