@@ -1,7 +1,6 @@
 name: start pre-commit
 
-on:
-  push
+on: [push]
 
 jobs:
   pre-commit:
