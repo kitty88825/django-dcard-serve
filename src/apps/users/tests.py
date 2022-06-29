@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 
-class UserRegister(APITestCase):
+class UserRegisterTestCase(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.anonymous_client = APIClient()
