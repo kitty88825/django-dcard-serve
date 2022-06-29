@@ -29,11 +29,11 @@ class UserTestCase(APITestCase):
         self.anonymous_client = APIClient()
         # jwt login user
         self.user = self.client.post(reverse("users:users-register"), self.user_info)
-        self.access_token = self.client.post(
-            reverse("token_obtain_pair"),
-            self.user_info,
-        ).data.get("access")
+        self.access_token = self.get_user_token(data=self.user_info).data.get("access")
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
+
+    def get_user_token(self, data):
+        return self.client.post(reverse("token_obtain_pair"), data)
 
     def get_me(self, client=None):
         client = client or self.client
@@ -60,11 +60,9 @@ class UserTestCase(APITestCase):
 
     def test_update_info(self):
         self.update_info()
-        before_response = self.client.post(reverse("token_obtain_pair"), self.user_info)
-        self.assertEqual(before_response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-        after_response = self.client.post(
-            reverse("token_obtain_pair"),
-            {"email": "user@gmail.com", "password": "changepwd"},
+        before_response = self.get_user_token(data=self.user_info)
+        after_response = self.get_user_token(
+            data={"email": "user@gmail.com", "password": "changepwd"},
         )
+        self.assertEqual(before_response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(after_response.status_code, status.HTTP_200_OK)
