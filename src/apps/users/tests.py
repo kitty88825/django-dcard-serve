@@ -22,15 +22,16 @@ class UserRegisterTestCase(APITestCase):
 
 
 class UserTestCase(APITestCase):
+    user_info = {"email": "user@gmail.com", "password": "pwd"}
+
     def setUp(self) -> None:
         super().setUp()
         self.anonymous_client = APIClient()
         # jwt login user
-        user_info = {"email": "user@gmail.com", "password": "pwd"}
-        self.user = self.client.post(reverse("users:users-register"), user_info)
+        self.user = self.client.post(reverse("users:users-register"), self.user_info)
         self.access_token = self.client.post(
             reverse("token_obtain_pair"),
-            user_info,
+            self.user_info,
         ).data.get("access")
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
 
@@ -49,3 +50,21 @@ class UserTestCase(APITestCase):
     def test_anonymous_get_user_info_is_fail(self):
         response = self.get_me(client=self.anonymous_client)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def update_info(self, client=None):
+        client = client or self.client
+        return client.patch(
+            reverse("users:users-update-info"),
+            {"password": "changepwd"},
+        )
+
+    def test_update_info(self):
+        self.update_info()
+        before_response = self.client.post(reverse("token_obtain_pair"), self.user_info)
+        self.assertEqual(before_response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        after_response = self.client.post(
+            reverse("token_obtain_pair"),
+            {"email": "user@gmail.com", "password": "changepwd"},
+        )
+        self.assertEqual(after_response.status_code, status.HTTP_200_OK)
