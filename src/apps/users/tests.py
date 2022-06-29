@@ -3,6 +3,24 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 
+class UserRegister(APITestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        self.anonymous_client = APIClient()
+        self.user_info = {"email": "user@gmail.com", "password": "pwd"}
+
+    def test_register_user(self):
+        response = self.anonymous_client.post(
+            reverse("users:users-register"),
+            self.user_info,
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.data,
+            {"id": 1, "username": "user", "email": "user@gmail.com", "image": None},
+        )
+
+
 class UserTestCase(APITestCase):
     def setUp(self) -> None:
         super().setUp()
