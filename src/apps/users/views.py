@@ -1,6 +1,6 @@
 from rest_framework import parsers, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -10,7 +10,6 @@ from .serializers import UserInfoSerializer, UserSerializer
 
 class UserViewSet(viewsets.GenericViewSet):
     serializer_class = UserSerializer
-    permission_classes = [IsAdminUser]
     parser_classes = [parsers.FormParser, parsers.MultiPartParser]
 
     def get_serializer_class(self):
@@ -23,8 +22,8 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(instance=request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(["POST"], False)
-    def register(self, request: Request, permission_classes=[AllowAny]) -> Response:
+    @action(["POST"], False, permission_classes=[AllowAny])
+    def register(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         password = serializer.validated_data.pop("password")
