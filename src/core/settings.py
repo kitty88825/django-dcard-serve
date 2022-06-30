@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from datetime import timedelta
+
 import environ
 
 root = environ.Path(__file__) - 2
@@ -191,4 +193,14 @@ SWAGGER_SETTINGS = {
             "description": "Format: `Bearer <access_token>`",
         },
     },
+}
+
+# Simple JWT
+JWT_ACCESS_TOKEN_LIFETIME = env("JWT_ACCESS_MINUTE", cast=int, default=5)
+JWT_REFRESH_TOKEN_LIFETIME = env("JWT_REFRESH_HOUR", cast=float, default=24)
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=JWT_ACCESS_TOKEN_LIFETIME),
+    "REFRESH_TOKEN_LIFETIME": timedelta(hours=JWT_REFRESH_TOKEN_LIFETIME),
+    "ROTATE_REFRESH_TOKENS": True,  # 若為 True，則重新整理後新的 refresh_token 有更新的有效時間
+    "UPDATE_LAST_LOGIN": True,  # 若為 True，auth_user 表中的 last_login 欄位在登錄時會更新
 }
